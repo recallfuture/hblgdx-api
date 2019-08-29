@@ -1,5 +1,7 @@
+import { provide } from 'midway';
 import { MyncmcApi } from '../api/myncmc';
 
+@provide()
 export class MyncmcService {
   // 登录
   //

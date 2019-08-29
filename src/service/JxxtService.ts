@@ -1,5 +1,7 @@
+import { provide } from 'midway';
 import { JxxtApi } from '../api/jxxt';
 
+@provide()
 export class JxxtService {
   // 登录
   //
