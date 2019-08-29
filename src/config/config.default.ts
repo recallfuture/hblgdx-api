@@ -17,5 +17,10 @@ export default (appInfo: EggAppInfo) => {
     }
   };
 
+  config.session = {
+    // 最多半小时
+    maxAge: 1000 * 60 * 30
+  };
+
   return config;
 };
