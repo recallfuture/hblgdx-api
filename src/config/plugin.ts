@@ -1,6 +1,7 @@
 import { EggPlugin } from 'midway';
 export default {
-  static: true, // default is true
+  static: true,
+  session: true, // default is true
   validate: {
     enable: true,
     package: 'egg-validate'
