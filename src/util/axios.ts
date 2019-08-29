@@ -17,7 +17,7 @@ axios.defaults.headers = {
   'Content-Type': 'application/x-www-form-urlencoded'
 };
 axios.defaults.responseType = 'document';
-axios.defaults.timeout = 5000;
+axios.defaults.timeout = 10000;
 axios.defaults.validateStatus = status => {
   return status >= 200 && status < 400;
 };
