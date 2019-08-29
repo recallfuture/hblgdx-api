@@ -4,6 +4,7 @@ import * as iconv from 'iconv-lite';
 import * as jsdom from 'jsdom';
 import { Course } from '../model/course';
 import { Homework } from '../model/homework';
+import { Resource, ResourceType } from '../model/resource';
 
 // 教学系统的api
 export class JxxtApi {
@@ -158,7 +159,7 @@ export class JxxtApi {
   static async getReminderList(): Promise<Course[]> {
     const content = await getGbkContent(this.reminderListUrl);
     const re = new RegExp(
-      '<a href="./lesson/enter_course.jsp?lid=(\\d+)&t=hw" target="_blank">(.+?)</a></li>',
+      '<a href="./lesson/enter_course.jsp\\?lid=(\\d+)&t=hw" target="_blank">(.+?)</a></li>',
       'g'
     );
 
@@ -166,10 +167,11 @@ export class JxxtApi {
     let match = re.exec(content);
 
     while (match) {
-      const id = match[1].trim();
-      const name = match[1].trim();
+      const course: Course = new Course();
 
-      const course: Course = { id, name };
+      course.id = match[1].trim();
+      course.name = match[2].trim();
+
       result.push(course);
 
       match = re.exec(content);
@@ -289,5 +291,108 @@ export class JxxtApi {
       return '';
     }
     return match[1];
+  }
+
+  // 获取所有的课程
+  static async getAllCourses(): Promise<Course[]> {
+    const re = new RegExp(
+      '<p class="title">\\s+<a.+?courseId=(\\d+).+?>\\s+(\\S+)(?:.|\\n)*?</p>',
+      'g'
+    );
+    const content = await getGbkContent(this.courseListUrl);
+    if (content == null) {
+      return [];
+    }
+
+    const result: Course[] = [];
+    let match = re.exec(content);
+
+    while (match) {
+      const course: Course = new Course();
+
+      course.id = match[1];
+      course.name = match[2];
+
+      result.push(course);
+      match = re.exec(content);
+    }
+
+    return result;
+  }
+
+  // 获取资源列表
+  static async getResourceList(
+    courseId: string,
+    folderId = '0'
+  ): Promise<Resource[]> {
+    // 需要先访问这个课程地址才能通过下面的固定地址得到正确的资源信息
+    await axios.get(`${this.courseUrl}?courseId=${courseId}`);
+    const content = await getGbkContent(
+      `${this.resourceListUrl}?lid=${courseId}&folderid=${folderId}`
+    );
+    if (content == null) {
+      console.log('content == null');
+      return [];
+    }
+
+    const result: Resource[] = [];
+    result.push(...this._getFolders(content));
+    result.push(...this._getFiles(content));
+
+    return result;
+  }
+
+  // 用正则匹配字符串里的所有文件夹信息
+  private static _getFolders(content: string): Resource[] {
+    const re = new RegExp(
+      '<a href="listview.jsp\\?acttype=enter&folderid=(\\d+)&lid=(\\d+)" title="">(.*?)</a>',
+      'g'
+    );
+    const result: Resource[] = [];
+    let match = re.exec(content);
+
+    while (match) {
+      const folderId = match[1];
+      const lId = match[2];
+      const folderName = match[3];
+
+      const resource: Resource = new Resource();
+      resource.folderId = folderId;
+      resource.lId = lId;
+      resource.name = folderName;
+      resource.type = ResourceType.folder;
+
+      result.push(resource);
+      match = re.exec(content);
+    }
+    return result;
+  }
+
+  /// 用正则匹配字符串里的所有文件信息
+  private static _getFiles(content: string): Resource[] {
+    const re = new RegExp(
+      '<a href="preview/download_preview.jsp\\?fileid=(\\d+)&resid=(\\d+)&lid=(\\d+)"(?:.|\\n)*?>(.*?)</a>',
+      'g'
+    );
+    const result: Resource[] = [];
+    let match = re.exec(content);
+
+    while (match) {
+      const fileId = match[1];
+      const resId = match[2];
+      const lId = match[3];
+      const fileName = match[4];
+
+      const resource: Resource = new Resource();
+      resource.fileId = fileId;
+      resource.resId = resId;
+      resource.lId = lId;
+      resource.name = fileName;
+      resource.type = ResourceType.file;
+
+      result.push(resource);
+      match = re.exec(content);
+    }
+    return result;
   }
 }

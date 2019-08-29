@@ -1,5 +1,6 @@
 import { assert } from 'midway-mock/bootstrap';
 import { JxxtApi } from '../../src/api/jxxt';
+import { Resource } from '../../src/model/resource';
 
 describe('test/api/jxxt.test.ts', () => {
   it('should success', async () => {
@@ -13,6 +14,10 @@ describe('test/api/jxxt.test.ts', () => {
 
     const detail = await JxxtApi.getHomeworkDetail(list[0].id);
     console.log(detail);
-    assert(!!detail);
+    assert(detail);
+
+    const resources: Resource[] = await JxxtApi.getResourceList('32340');
+    console.log(resources);
+    assert(resources.length > 0);
   });
 });
