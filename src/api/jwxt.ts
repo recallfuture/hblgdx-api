@@ -45,10 +45,12 @@ export class JwxtApi {
   }
 
   // 获取验证码
-  static getValidateCode() {
-    return axios.get(this.validateCodeUrl, {
+  static async getValidateCode() {
+    const response = await axios.get(this.validateCodeUrl, {
       responseType: 'arraybuffer'
     });
+
+    return response.data;
   }
 
   // 登录

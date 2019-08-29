@@ -17,12 +17,7 @@
       "protocol": "auto",
       "request": "launch",
       "restart": true,
-      "runtimeArgs": [
-        "run",
-        "debug",
-        "--",
-        "--inspect-brk"
-      ],
+      "runtimeArgs": ["run", "debug", "--", "--inspect-brk"],
       "runtimeExecutable": "npm",
       "skipFiles": [
         // "${workspaceFolder}/node_modules/**/*.js",
