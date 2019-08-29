@@ -1,5 +1,6 @@
 import axios from 'axios';
 import axiosCookieJarSupport from 'axios-cookiejar-support';
+import * as iconv from 'iconv-lite';
 import * as tough from 'tough-cookie';
 
 axiosCookieJarSupport(axios);
@@ -25,3 +26,10 @@ axios.defaults.withCredentials = true;
 axios.defaults.jar = cookieJar;
 
 export default axios;
+
+export async function getGbkContent(url: string) {
+  const response = await axios.get(url, {
+    responseType: 'arraybuffer'
+  });
+  return iconv.decode(response.data, 'gbk');
+}
