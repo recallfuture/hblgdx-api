@@ -90,7 +90,7 @@ export class JwxtApi {
 
     if (response.status === 200) {
       // 转码
-      const content = iconv.decode(Buffer.concat(response.data), 'gbk');
+      const content = iconv.decode(response.data, 'gbk');
 
       // 用户名密码错误也会返回200，所以要进一步解析判定
       return this._getErrorCode(content);
