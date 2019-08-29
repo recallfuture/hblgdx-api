@@ -1,4 +1,5 @@
 import axios from '../util/axios';
+import * as qs from 'qs';
 import * as iconv from 'iconv-lite';
 
 // 教务系统的api
@@ -66,33 +67,32 @@ export class JwxtApi {
   // 401为验证码错误
   // 500为未知错误
   static async login(username: string, password: string, code: string) {
-    if (!!username || !!password || !!code) {
+    if (!username || !password || !code) {
       return 400;
     }
 
-    const response = await axios.post(
-      this.loginUrl,
-      {
-        zjh1: '',
-        tips: '',
-        lx: '',
-        evalue: '',
-        fs: '',
-        dzslh: '',
-        zjh: username,
-        mm: password,
-        v_yzm: code
-      },
-      {
-        responseType: 'arraybuffer'
-      }
-    );
+    // 为了兼容学校的老网站，需要用application/x-www-form-urlencoded方式提交数据
+    const data = qs.stringify({
+      zjh1: '',
+      tips: '',
+      lx: '',
+      evalue: '',
+      fs: '',
+      dzslh: '',
+      zjh: username,
+      mm: password,
+      v_yzm: code
+    });
+
+    const response = await axios.post(this.loginUrl, data, {
+      responseType: 'arraybuffer'
+    });
 
     if (response.status === 200) {
       // 转码
       const content = iconv.decode(Buffer.concat(response.data), 'gbk');
 
-      // 返回错误码
+      // 用户名密码错误也会返回200，所以要进一步解析判定
       return this._getErrorCode(content);
     } else {
       return 500;

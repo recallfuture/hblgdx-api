@@ -4,11 +4,13 @@
   "description": "华北理工大学校园查后端api",
   "private": true,
   "dependencies": {
+    "@types/qs": "^6.5.3",
     "axios": "^0.19.0",
     "axios-cookiejar-support": "^0.5.0",
     "egg-scripts": "^2.10.0",
     "iconv-lite": "^0.5.0",
     "midway": "^1.0.0",
+    "qs": "^6.8.0",
     "tough-cookie": "^3.0.1"
   },
   "devDependencies": {
