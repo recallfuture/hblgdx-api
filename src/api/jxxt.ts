@@ -148,7 +148,7 @@ export class JxxtApi {
   }
 
   // 注销
-  static logout() {
+  static async logout() {
     return axios.get(this.logoutUrl);
   }
 
