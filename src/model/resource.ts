@@ -27,7 +27,9 @@ export class Resource {
   // 资源的类型（文件或文件夹）
   type: ResourceType;
 
-  get downloadUrl() {
+  downloadUrl: string | null;
+
+  getDownloadUrl(): string | null {
     if (this.type === ResourceType.folder) {
       return null;
     }

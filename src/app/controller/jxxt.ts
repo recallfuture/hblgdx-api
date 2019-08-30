@@ -49,17 +49,16 @@ export class JxxtController {
     this.ctx.body = await this.jxxtService.getReminderList();
   }
 
-  @get('/homeworks', { middleware: ['needJxxtSession'] })
+  @get('/homeworks/:id', { middleware: ['needJxxtSession'] })
   async getHomeworkList() {
-    const createRule = {
-      courseId: { type: 'string' }
-    };
-
-    // 校验参数
-    this.ctx.validate(createRule);
-
-    const courseId = this.ctx.query.courseId;
+    const courseId = this.ctx.params.id;
     this.ctx.body = await this.jxxtService.getHomeworkList(courseId);
+  }
+
+  @get('/homeworks/detail/:id', { middleware: ['needJxxtSession'] })
+  async getHomeworkDetail() {
+    const homeworkId = this.ctx.params.id;
+    this.ctx.body = await this.jxxtService.getHomeworkDetail(homeworkId);
   }
 
   @get('/courses', { middleware: ['needJxxtSession'] })

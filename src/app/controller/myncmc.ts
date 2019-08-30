@@ -16,8 +16,7 @@ export class MyncmcController {
   async login() {
     const createRule = {
       username: { type: 'string' },
-      password: { type: 'string' },
-      code: { type: 'string' }
+      password: { type: 'string' }
     };
 
     // 校验参数

@@ -39,6 +39,10 @@ export class JxxtService {
     return JxxtApi.getHomeworkList(courseId);
   }
 
+  async getHomeworkDetail(homeworkId: string) {
+    return JxxtApi.getHomeworkDetail(homeworkId);
+  }
+
   // 获取所有的课程
   async getAllCourses() {
     return JxxtApi.getAllCourses();

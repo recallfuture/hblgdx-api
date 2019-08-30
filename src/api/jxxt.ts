@@ -389,6 +389,7 @@ export class JxxtApi {
       resource.lId = lId;
       resource.name = fileName;
       resource.type = ResourceType.file;
+      resource.downloadUrl = resource.getDownloadUrl();
 
       result.push(resource);
       match = re.exec(content);
